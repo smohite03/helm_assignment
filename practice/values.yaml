@@ -1,0 +1,33 @@
+apiVersion: v1
+appName: myapp
+
+# PODs Settings 
+pod:
+  name: mypod
+  image: nginx
+  minTerminalGracePeriodSeconds: 10
+  volumes: 
+    volumeMounts: myvolume
+    volumeMountPath: /data/temp/volume
+    storage: 1Gi
+  port:
+    name: myport
+    portno: 80
+
+configMap:
+  name: myconfig
+
+configMap2:
+  name: myconfig2
+  mountPath: /data/temp/config
+
+secret:
+  name: mysecret
+
+secret2:
+  name: mysecret2
+  mountPath: /data/temp/secret
+
+replicas: 3
+minReadySeconds: 10
+

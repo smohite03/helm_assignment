@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+    name: {{ .Values.configMap.name}}
+data:
+    POSTGRES_USER: postgres
+    POSTGRES_HOST: localhost
+    POSTGRES_DB: user

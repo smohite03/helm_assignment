@@ -1,0 +1,52 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: {{ .Values.appName}}
+spec:
+  selector:
+    matchLabels:
+      app: {{ .Values.appName}}
+  serviceName: {{ .Values.appName}}
+  replicas: {{ .Values.replicas }}
+  minReadySeconds: {{ .Values.minReadySeconds }} 
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.appName}} 
+    spec:
+        terminationGracePeriodSeconds: {{ .Values.pod.minTerminalGracePeriodSeconds}}
+        containers:
+            -   name: {{ .Values.pod.name}}
+                image: {{ .Values.pod.image}}
+                envFrom:
+                    -   configMapRef:
+                            name: {{ .Values.configMap.name }}
+                    -   secretRef:
+                            name:  {{ .Values.secret.name }}
+                ports:
+                    -   containerPort: {{ .Values.pod.port.portno }}
+                        name: {{ .Values.pod.port.name }}
+                volumeMounts:
+                    -   name: {{ .Values.pod.volumes.volumeMounts }}
+                        mountPath: {{ .Values.pod.volumes.volumeMountPath }}
+                    -   name: {{ .Values.configMap2.name }}
+                        mountPath: {{ .Values.configMap2.mountPath }}
+                    -   name: {{ .Values.secret2.name }}
+                        mountPath: {{ .Values.secret2.mountPath }}
+                        readOnly: true
+        volumes:
+            -   name: {{ .Values.configMap2.name }}
+                configMap: 
+                    name: {{ .Values.configMap2.name }}
+            -   name: {{ .Values.secret2.name }}
+                secret: 
+                    secretName: {{ .Values.secret2.name }}
+
+  volumeClaimTemplates:
+  - metadata:
+      name: {{ .Values.pod.volumes.volumeMounts }}
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      resources:
+        requests:
+          storage: {{ .Values.pod.volumes.storage }}
